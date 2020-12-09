@@ -1,0 +1,135 @@
+start, load gap
+store temp
+
+// shrink gap
+output
+
+mult, load gap
+add temp
+
+store gap
+output
+load ten
+subt one
+store ten
+skipcond 400
+jump mult
+load resetMult
+store ten
+
+
+
+
+
+load gap
+div thirteen
+output
+store gap
+store temp
+// check if gap is less than 1
+load gap
+subt one
+skipcond 000
+jump gapIsBigger //leave gap as is 
+
+// if gap is less than one we  return one as our new gap
+load one
+store gap
+
+
+
+// set swapped to false 
+gapIsBigger, load zero
+store swapped
+
+
+load zero
+store i
+startFor, load arrStart
+
+//a[i]
+load arrStart
+add i
+store left
+
+// a[i+gap]
+load arrStart
+add i
+add gap
+store right
+storei temp
+
+
+//if(a[i] > a[i+gap]
+loadi left
+
+subt temp//temp holds value at right
+skipcond 400
+skipcond 800
+jump forConditional
+
+
+loadi right
+store temp
+loadi left
+storei right
+load temp
+storei left
+
+// swapped =true
+load one
+store swapped
+
+
+
+
+forConditional, load i 
+add one
+store i
+load n
+subt gap
+subt i
+subt one
+skipcond 000
+skipcond 400
+jump startFor
+
+
+// while loop conditionals
+//gap != 1
+whileConditional, load gap
+subt one
+skipcond 400
+jump start
+// swapped == true
+load swapped
+subt one
+skipcond 000
+jump start
+
+
+
+halt
+
+
+
+i, dec 0
+n, dec 6
+zero, dec 0
+gap, dec 5
+swapped, dec 1
+one, dec 1
+ten, dec 9
+resetMult, dec 9
+thirteen, dec 13
+
+temp, dec 0
+left, hex 0
+right, hex 0
+arrStart, hex 53
+	dec 0
+	dec 5
+	dec 7
+	dec 2
+	dec 3
+	dec 9

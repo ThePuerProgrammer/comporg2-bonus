@@ -1,0 +1,107 @@
+/ Insertion Sort, Computer Organization 2
+/ Jesse Rankins, Jason Hunter, Nicholas Martinez (Team Programming)
+/ Array Template Courtesy of Dr Sung, via CompOrg1
+	ORG	0
+	JUMP       s
+BAddr,  hex	0003	/ DATA_B = 0003 (hex)
+EAddr,  hex	001B	/ DATA_E = 001B (hex)
+
+	/ data section begins
+DATA_B, hex	06EF
+	hex	0713
+	hex	0444
+	hex	0CAD
+	hex	0DAC
+	hex	0AAE
+	hex	0123
+	hex	0987
+	hex	0776
+	hex	0BBB
+	hex	0EE0
+	hex	050F
+	hex	0F04
+	hex	0AAA
+	hex	0A26
+	hex	0909
+	hex	0808
+	hex	0707
+	hex	0333
+	hex	0BCD
+	hex	0DCB
+	hex	0001
+	hex	0023
+	hex	088A
+DATA_E, hex	0FFF
+n,      dec        25 / arr.size
+o,      dec        1
+i,      dec        0
+j,      dec	0
+a,      dec	0
+x,      dec	0
+t,      dec	0
+s,      LOAD       n / *****************
+	SUBT       o / int n = size - 1;
+	STORE      n / *****************
+f,      LOAD       n / *****************
+	SUBT       i / for (;i < j;)
+	SKIPCOND 800 / *****************
+	JUMP       h / terminate condition
+	LOAD       i / *****************
+	ADD        o / int j = i + 1;
+	STORE      j / *****************
+g,      LOAD       j / *****************
+	SKIPCOND 800 / for (;j > 0;)
+	JUMP       b / *****************
+	LOAD   BAddr / *****************
+	ADD        j / 
+	STORE      x / 
+	LOADI      x / arr[j]
+	STORE      a / *****************
+	LOAD   BAddr / *****************
+	ADD        j /
+	SUBT       o /
+	STORE      x / 
+        LOADI      x / arr[j - 1]
+	SUBT       a / ***************** 
+	SKIPCOND 800 / if (arr[j] < arr[j - 1])
+	JUMP       b / *****************
+	LOAD   BAddr / *****************
+	ADD        j / 
+	STORE      x / 
+	LOADI      x / int t = arr[j];
+	STORE      t / *****************
+	LOAD   BAddr / *****************
+	ADD        j / arr[j]
+	STORE      a / *****************
+	LOAD   BAddr / *****************
+	ADD        j / 
+	SUBT       o / 
+	STORE      x / 
+	LOADI      x / arr[j] = arr[j - 1];
+	STOREI     a / *****************
+	LOAD       t / arr[j - 1] = t;
+	STOREI     x / *****************
+	LOAD       j / *****************
+	SUBT       o / for (;;--j)
+	STORE      j / *****************
+	JUMP       g / *****************
+b,      LOAD       i / 
+	ADD        o / 
+	STORE      i / for (;;i++)
+	JUMP       f / *****************
+h,      HALT
+/ ALGO BASED ON
+/void insertionSort() { // BY JESSE RANKINS
+/    int n = size - 1;
+/    for (int i = 0; i < n; i++) {
+/        for (int j = i + 1; j > 0; j--) {
+/            if (arr[j] < arr[j - 1]) {
+/                int t = arr[j];
+/                arr[j]= arr[j - 1];
+/                arr[j - 1] = t;
+/            } else {
+/                break;
+/            }
+/        }
+/    }
+/}

@@ -1,0 +1,126 @@
+/ Reverse Int (positive only variant for MARIE)
+/ REQUIRES DIV added to MARIE instruction set in project 3
+/ 0 <= Result <= 2047
+/ Comp Org 2
+/ Jesse Rankins, Jason Hunter, Nicholas Martinez
+
+    INPUT
+    STORE   x
+    STORE   c 
+w,  SKIPCOND 800    / ****************
+    JUMP    n       / while (c) {} 
+    LOAD    ten2    / ****************
+    STORE   ten     / ****************
+    LOAD    d       / 
+    ADD     o       / ++d;
+    STORE   d       /
+    LOAD    t       / ****************
+    STORE   t2      / mult requires
+    LOAD    c       / additional vars
+    STORE   c2      / 
+m,  LOAD    ten     / ****************
+    SUBT    o       /
+    SKIPCOND 800    /
+    JUMP    dc      /
+    LOAD    t       / t *= 10;
+    ADD     t2      /
+    STORE   t       /
+    LOAD    ten     /
+    SUBT    o       /
+    STORE   ten     /
+    JUMP    m       / ****************
+dc, LOAD    c       / ****************
+    DIV     ten2    / c /= 10;
+    STORE   c       /
+    JUMP    w       / ****************
+n,  LOAD    t       / ****************
+    DIV     ten2    / t /= 10;
+    STORE   t       / ****************
+f,  LOAD    d       / ****************
+    SUBT    i       / for (;i < d;)
+    SKIPCOND 800    /
+    JUMP    e       / ****************
+    LOAD    x       / additional vars
+    STORE   x2      / for modulus
+md, LOAD    x2      / ****************
+    SUBT    ten2    / 
+    SKIPCOND 000    / 
+    JUMP    a       /
+    JUMP    b       /
+a,  STORE   x2      / x % 10; // x2
+    JUMP    md      /
+b,  LOAD    t       /
+    STORE   t2      /
+    LOAD    x2      / additional vars
+    STORE   x3      / ****************
+mt, LOAD    t2      / ****************
+    SUBT    o       /
+    SKIPCOND 800    /
+    JUMP    cp      /
+    LOAD    x2      /
+    ADD     x3      / x2 * t
+    STORE   x2      / 
+    LOAD    t2      /
+    SUBT    o       /
+    STORE   t2      /
+    JUMP    mt      / ****************
+cp, LOAD    c       / ****************
+    ADD     x2      /
+    STORE   c       / c += x % 10 * t;
+    SUBT    l       /
+    SKIPCOND 000    / if (c + (x % 10 * t) < 2047
+    JUMP    z       /
+    LOAD    x       /
+    DIV     ten2    / x /= 10;
+    STORE   x       /
+    LOAD    t       /
+    DIV     ten2    / t /= 10;
+    STORE   t       /
+    LOAD    i       /
+    ADD     o       /
+    STORE   i       /
+    JUMP    f       / ****************
+e,  LOAD    c       / 
+    OUTPUT          / return c
+    HALT            / ****************
+z,  LOAD    zero    /
+    OUTPUT          / else { return 0 };
+    HALT            /
+
+x,  dec 0
+x2, dec 0
+x3, dec 0
+d,  dec 0
+o,  dec 1
+c,  dec 0
+c2, dec 0
+ten,  dec 10
+ten2, dec 10
+t,  dec 1
+t2, dec 0
+i,  dec 0
+l,  dec 2047
+q,  dec 0
+zero,   dec 0
+
+/ based on the following C++ function by Jesse Rankins
+// int reverse(int x) {
+//     int d = 0;
+//     long t = 1, c = (long) x;
+//     while (c) {
+//         ++d;
+//         t *= 10;
+//         c /= 10;
+//     }
+//     t /= 10;
+//     for (int i = 0; i < d; ++i) {
+//         if (c + (x % 10 * t) < 2147483647 && c + (x % 10 * t) > -2147483647 - 1) {
+//             c += x % 10 * t;
+//         } else {
+//             return 0;
+//         }
+//         x /= 10;
+//         t /= 10;
+//     } 
+//     return (int)c;
+// }

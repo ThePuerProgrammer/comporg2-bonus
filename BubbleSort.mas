@@ -1,0 +1,140 @@
+/
+/ Bonus (BubbleSort), Computer Organization II
+/ Name:   Nicholas Martinez
+/
+	ORG	0
+	JUMP	start
+BAddr,	hex	0003	/ DATA_B = 0003 (hex)
+EAddr,	hex	0019	/ DATA_E = 0019 (hex)
+
+	/ data section begins
+DATA_B,	hex	0512	/ data begin
+	hex	0091
+	hex	0906
+	hex	00CA
+	hex	001A
+	hex	00AF
+	hex	0C25
+	hex	0038
+	hex	0131
+	hex	00B9
+	hex	0039
+	hex	0050
+	hex	0005
+	hex	00BD
+	hex	065F
+	hex	0059
+	hex	0F08
+	hex	0BAB
+	hex	0040
+	hex	007A
+	hex	03D1
+	hex	0030
+DATA_E,	hex	00FE	/ data end
+
+Count,	dec	23	/ the number of data
+/
+/ do not modify codes above
+/ add code/data below
+/
+
+	/int OutLoop = zero;
+
+start,  jump o_loop
+
+	/while(true) {
+	/if(Outloop == Count) break; 
+	/int InLoop = ONE;
+
+o_loop, load Count
+	subt outloop
+	skipcond 800 /AC > 0 /outloop = count, when no more positive value, go to the end
+	jump end_loop 
+
+	/while(true) {
+	/if(InLoop == Count - OutLoop) break;
+
+i_loop, load EAddr /hex 19, last element or dec 25
+	subt outloop
+	add one
+	store temp
+	subt inloop
+	skipcond 800 /AC > 0 EAddr - outloop = temp - inloop
+	jump o_count
+
+	/if(Data[InLoop - ONE] > Data[InLoop]);
+	/SwapSubProg(Data[InLoop-ONE], Data[InLoop]); }
+	/void SwapSubProg(int& a, int& b) {
+	/int temp = a;
+	/a = b;
+	/b = temp; }
+
+swap,   loadi inloop /loads Data[inloop] = 0091 /a
+	store temp /temp = 0091 temp = a
+	loadi inloop_one /loads Data[inloop - one]
+	store temp2 /b
+	
+	load temp
+	subt temp2
+	skipcond 000 /AC < 0?
+	jump i_count /if positive value, jump back to i_count
+	
+	/perform swap
+	load temp2
+	storei inloop
+	load temp
+	storei inloop_one
+	jump i_count
+
+	/InLoop = InLoop + ONE;
+
+i_count, load inloop
+	add one
+	store inloop
+	load inloop_one
+	add one
+	store inloop_one
+	jump i_loop
+
+	/OutLoop = OutLoop + ONE;
+
+o_count, load outloop
+	add one
+	store outloop
+	load inloop_s
+	store inloop
+	load BAddr
+	store inloop_one
+	jump o_loop /restart the loop
+
+	/int Index = ZERO;
+	/while(true) {
+	/if(index == Count) break;
+	/cout << hex << Data[Index] << endl;
+	/Index = Index + ONE; }
+
+end_loop, load Count
+	subt index
+	skipcond 800 /AC > 0
+	halt
+	loadi inloop_one_s
+	output
+	load inloop_one_s
+	add one
+	store inloop_one_s
+	load index
+	add one
+	store index
+	jump end_loop
+
+/labels
+outloop, hex 0
+inloop, hex 0004
+inloop_s, hex 0004
+inloop_one, hex 0003
+inloop_one_s, hex 0003
+temp,   hex 0 /used for inloop == count - outloop
+temp2,  hex 0 /used to store contens of inloop - one
+index,  hex 0
+zero,   hex 0
+one,    hex 1

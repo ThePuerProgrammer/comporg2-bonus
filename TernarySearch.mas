@@ -1,0 +1,186 @@
+	ORG	0
+
+	JUMP	start
+
+BAddr,	hex	0000	/ DATA_B = 0003 (hex)
+EAddr,	hex	0016	/ DATA_E = 0019 (hex)
+
+	/ data section begins
+DATA_B,	hex	0001	/ data begin
+	hex	0002
+	hex	0003
+	hex	0004
+	hex	0005
+	hex	0006
+	hex	0007
+	hex	0008
+	hex	0009
+	hex	000A
+	hex	000B
+	hex	000C
+	hex	000D
+	hex	000E
+	hex	000F
+	hex	0010
+	hex	0011
+	hex	0012
+	hex	0013
+	hex	0014
+	hex	0015
+	hex	0016
+DATA_E,	hex	0017	/ data end
+
+
+/
+/ do not modify codes above
+/ add code/data below
+/
+//get search key from user
+
+start,  clear
+	input
+	store num//user input
+	load EAddr
+	store high //array at end
+	load BAddr
+	store low //array at begin
+
+//initialization
+m_1,    load high
+	subt low
+	skipcond 800
+	jns checkeven
+	load high //mid1 = l+(r-l)/3;
+	subt low
+	div three
+	add low
+	store mid1
+	
+m_2,    load high //mid2 = r-(r-l)/3;
+	subt low //add one
+	div three
+	store temp
+	load high
+	subt temp
+	store mid2
+	
+check1, loadi mid1
+	subt num
+	skipcond 400 //ac == 0
+	jump check2
+	jump end1 //key found
+
+check2, loadi mid2
+	subt num
+	skipcond 400 //ac == 00
+	jump if
+	jump end2 //key found
+
+if,     loadi mid1
+	subt num
+	skipcond 800
+	jump else_if //key is > mid1
+	load mid1
+	subt one
+	store high
+	jump m_1
+
+else_if, loadi mid2
+	store temp
+	load num
+	subt temp
+	skipcond 800
+	jump else //key is between mids
+	load mid2
+	add one
+	store low
+	jump m_1
+
+else,  load mid1
+	add one
+	store low
+	load mid2
+	subt one
+	store high
+	jump m_1
+
+end1,   load mid1 //outputs element position
+	output
+	halt
+
+end2,   load mid2 //outputs element position
+	output
+	halt
+
+checkeven, dec 0
+	load high
+	subt low
+	skipcond 400
+	jump end_nf
+	jumpi checkeven
+
+//end program, key not found
+end_nf, load notfound
+	output
+	halt
+	
+/labels
+notfound, hex -1
+zero, hex 0
+num,  hex 0
+low,  hex 0
+high, hex 0
+one,  hex 1
+three, hex 3
+mid1, hex 0
+mid2, hex 0
+temp, hex 0
+Data_F, hex Ffff
+Count,	dec	23	/ the number of data
+
+		
+// int ternarySearch(int l, int r, int key, int ar[])
+// {
+//     if (r >= l) {
+ 
+//         // Find the mid1 and mid2
+//         int mid1 = l + (r - l) / 3;
+//         int mid2 = r - (r - l) / 3;
+ 
+//         // Check if key is present at any mid
+//         if (ar[mid1] == key) {
+//             return mid1;
+//         }
+//         if (ar[mid2] == key) {
+//             return mid2;
+//         }
+ 
+//         // Since key is not present at mid,
+//         // check in which region it is present
+//         // then repeat the Search operation
+//         // in that region
+//         if (key < ar[mid1]) {
+ 
+//             // The key lies in between l and mid1
+//             return ternarySearch(l, mid1 - 1, key, ar);
+//         }
+//         else if (key > ar[mid2]) {
+ 
+//             // The key lies in between mid2 and r
+//             return ternarySearch(mid2 + 1, r, key, ar);
+//         }
+//         else {
+ 
+//             // The key lies in between mid1 and mid2
+//             return ternarySearch(mid1 + 1, mid2 - 1, key, ar);
+//         }
+//     }
+ 
+//     // Key not found
+//     return -1;
+// }
+	
+	
+ 
+	
+
